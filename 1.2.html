@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Procurement Portal - FarmConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#16a34a',
+                        secondary: '#15803d'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-emerald-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-4 border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🌱</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">FarmConnect</h1>
+                        <p class="text-sm text-gray-600">Vendor Procurement Portal</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Welcome back,</p>
+                        <p class="font-semibold text-gray-900">Rajesh Kumar</p>
+                    </div>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notification System -->
+    <div id="notification" class="fixed top-4 right-4 z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="bg-white border-l-4 border-green-500 rounded-lg shadow-lg p-4 max-w-sm">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <span id="notificationIcon" class="text-green-500 text-xl">✅</span>
+                </div>
+                <div class="ml-3">
+                    <p id="notificationMessage" class="text-sm font-medium text-gray-900"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Available Products</p>
+                        <p class="text-2xl font-bold text-gray-900" id="availableProducts">44</p>
+                    </div>
+                    <div class="text-blue-500 text-3xl">📦</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Active Farmers</p>
+                        <p class="text-2xl font-bold text-gray-900">32</p>
+                    </div>
+                    <div class="text-green-500 text-3xl">👨‍🌾</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Cart Items</p>
+                        <p class="text-2xl font-bold text-gray-900" id="cartCount">0</p>
+                    </div>
+                    <div class="text-yellow-500 text-3xl">🛒</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Total Amount</p>
+                        <p class="text-2xl font-bold text-gray-900">₹<span id="totalAmount">0</span></p>
+                    </div>
+                    <div class="text-purple-500 text-3xl">💰</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Filter Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select id="categoryFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="all">All Categories</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="grains">Grains</option>
+                    <option value="herbs">Herbs</option>
+                </select>
+                <select id="locationFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="all">All Locations</option>
+                    <option value="10">Within 10km</option>
+                    <option value="25">Within 25km</option>
+                    <option value="50">Within 50km</option>
+                </select>
+                <select id="sortFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="default">Sort by Price</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="distance">Distance: Near to Far</option>
+                </select>
+                <button onclick="applyFilters()" class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-lg transition-colors">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+
+        <!-- Floating Cart Icon -->
+        <div class="fixed bottom-6 right-6 z-50">
+            <button onclick="toggleCartModal()" class="bg-primary hover:bg-secondary text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 relative">
+                <span class="text-2xl">🛒</span>
+                <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold hidden">0</span>
+            </button>
+        </div>
+
+        <!-- Cart Modal -->
+        <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+                    <div class="flex justify-between items-center p-6 border-b">
+                        <h2 class="text-xl font-semibold text-gray-900">Cart Summary</h2>
+                        <button onclick="toggleCartModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                    </div>
+                    <div class="p-6 max-h-96 overflow-y-auto">
+                        <div id="cartItems" class="space-y-3 mb-6">
+                            <p class="text-gray-500 text-center py-8">Your cart is empty. Add some products to get started!</p>
+                        </div>
+                    </div>
+                    <div class="border-t p-6">
+                        <div class="flex justify-between items-center text-lg font-semibold mb-4">
+                            <span>Total Amount:</span>
+                            <span class="text-primary">₹<span id="cartTotal">0</span></span>
+                        </div>
+                        <button id="checkoutBtn" class="w-full bg-primary hover:bg-secondary text-white py-3 rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed" disabled onclick="checkout()">
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let cart = {};
+        let cartTotal = 0;
+        let allProducts = [];
+        let filteredProducts = [];
+
+        // Complete product database with all categories
+        const productDatabase = [
+            // Vegetables
+            { id: 'tomatoes', name: 'Fresh Tomatoes', category: 'vegetables', emoji: '🍅', farmer: 'Suresh Patel', distance: 12, available: 50, basePrice: 25, yourPrice: 28, bgColor: 'from-red-100 to-red-200' },
+            { id: 'cabbage', name: 'Fresh Cabbage', category: 'vegetables', emoji: '🥬', farmer: 'Ramesh Singh', distance: 8, available: 30, basePrice: 15, yourPrice: 18, bgColor: 'from-green-100 to-green-200' },
+            { id: 'carrots', name: 'Fresh Carrots', category: 'vegetables', emoji: '🥕', farmer: 'Mukesh Kumar', distance: 15, available: 40, basePrice: 30, yourPrice: 34, bgColor: 'from-orange-100 to-orange-200' },
+            { id: 'brinjal', name: 'Fresh Brinjal', category: 'vegetables', emoji: '🍆', farmer: 'Vijay Sharma', distance: 6, available: 25, basePrice: 20, yourPrice: 22, bgColor: 'from-purple-100 to-purple-200' },
+            { id: 'cucumber', name: 'Fresh Cucumber', category: 'vegetables', emoji: '🥒', farmer: 'Deepak Yadav', distance: 10, available: 20, basePrice: 18, yourPrice: 21, bgColor: 'from-green-100 to-green-200' },
+            { id: 'onions', name: 'Red Onions', category: 'vegetables', emoji: '🧅', farmer: 'Prakash Jain', distance: 14, available: 60, basePrice: 22, yourPrice: 25, bgColor: 'from-red-100 to-red-200' },
+            { id: 'potatoes', name: 'Fresh Potatoes', category: 'vegetables', emoji: '🥔', farmer: 'Ravi Kumar', distance: 18, available: 80, basePrice: 12, yourPrice: 15, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'spinach', name: 'Fresh Spinach', category: 'vegetables', emoji: '🥬', farmer: 'Sunita Devi', distance: 7, available: 15, basePrice: 25, yourPrice: 28, bgColor: 'from-green-100 to-green-200' },
+            { id: 'cauliflower', name: 'Cauliflower', category: 'vegetables', emoji: '🥦', farmer: 'Mohan Lal', distance: 22, available: 35, basePrice: 28, yourPrice: 33, bgColor: 'from-green-100 to-green-200' },
+            { id: 'bellpepper', name: 'Bell Peppers', category: 'vegetables', emoji: '🫑', farmer: 'Ashok Singh', distance: 16, available: 28, basePrice: 45, yourPrice: 50, bgColor: 'from-green-100 to-green-200' },
+            { id: 'okra', name: 'Fresh Okra', category: 'vegetables', emoji: '🌶️', farmer: 'Sanjay Patel', distance: 11, available: 22, basePrice: 32, yourPrice: 36, bgColor: 'from-green-100 to-green-200' },
+            { id: 'peas', name: 'Green Peas', category: 'vegetables', emoji: '🟢', farmer: 'Kiran Sharma', distance: 9, available: 18, basePrice: 55, yourPrice: 58, bgColor: 'from-green-100 to-green-200' },
+            { id: 'radish', name: 'White Radish', category: 'vegetables', emoji: '🥕', farmer: 'Bharat Singh', distance: 13, available: 25, basePrice: 20, yourPrice: 23, bgColor: 'from-white to-gray-100' },
+            { id: 'beetroot', name: 'Fresh Beetroot', category: 'vegetables', emoji: '🟣', farmer: 'Anita Devi', distance: 17, available: 30, basePrice: 35, yourPrice: 39, bgColor: 'from-red-100 to-red-200' },
+            { id: 'ginger', name: 'Fresh Ginger', category: 'vegetables', emoji: '🫚', farmer: 'Mahendra Yadav', distance: 19, available: 15, basePrice: 80, yourPrice: 85, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'garlic', name: 'Fresh Garlic', category: 'vegetables', emoji: '🧄', farmer: 'Pushpa Kumari', distance: 21, available: 12, basePrice: 120, yourPrice: 126, bgColor: 'from-white to-gray-100' },
+            
+            // Fruits
+            { id: 'apples', name: 'Fresh Apples', category: 'fruits', emoji: '🍎', farmer: 'Rajesh Verma', distance: 25, available: 45, basePrice: 80, yourPrice: 85, bgColor: 'from-red-100 to-red-200' },
+            { id: 'bananas', name: 'Ripe Bananas', category: 'fruits', emoji: '🍌', farmer: 'Krishna Rao', distance: 12, available: 30, basePrice: 35, yourPrice: 38, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'oranges', name: 'Sweet Oranges', category: 'fruits', emoji: '🍊', farmer: 'Sunil Patil', distance: 20, available: 40, basePrice: 50, yourPrice: 55, bgColor: 'from-orange-100 to-orange-200' },
+            { id: 'mangoes', name: 'Alphonso Mangoes', category: 'fruits', emoji: '🥭', farmer: 'Ganesh Bhosle', distance: 35, available: 25, basePrice: 120, yourPrice: 128, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'grapes', name: 'Fresh Grapes', category: 'fruits', emoji: '🍇', farmer: 'Vinod Desai', distance: 28, available: 20, basePrice: 90, yourPrice: 96, bgColor: 'from-purple-100 to-purple-200' },
+            { id: 'pomegranate', name: 'Pomegranate', category: 'fruits', emoji: '🍎', farmer: 'Mahesh Joshi', distance: 30, available: 18, basePrice: 110, yourPrice: 118, bgColor: 'from-red-100 to-red-200' },
+            { id: 'watermelon', name: 'Watermelon', category: 'fruits', emoji: '🍉', farmer: 'Ramesh Gaikwad', distance: 15, available: 12, basePrice: 15, yourPrice: 18, bgColor: 'from-green-100 to-green-200' },
+            { id: 'papaya', name: 'Fresh Papaya', category: 'fruits', emoji: '🍈', farmer: 'Santosh More', distance: 18, available: 22, basePrice: 25, yourPrice: 28, bgColor: 'from-orange-100 to-orange-200' },
+            { id: 'pineapple', name: 'Sweet Pineapple', category: 'fruits', emoji: '🍍', farmer: 'Joseph Thomas', distance: 32, available: 15, basePrice: 45, yourPrice: 52, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'guava', name: 'Fresh Guava', category: 'fruits', emoji: '🍈', farmer: 'Raman Gupta', distance: 24, available: 28, basePrice: 40, yourPrice: 45, bgColor: 'from-green-100 to-green-200' },
+            { id: 'lemon', name: 'Fresh Lemons', category: 'fruits', emoji: '🍋', farmer: 'Shanti Bai', distance: 16, available: 20, basePrice: 60, yourPrice: 64, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'coconut', name: 'Fresh Coconut', category: 'fruits', emoji: '🥥', farmer: 'Ravi Nair', distance: 38, available: 25, basePrice: 35, yourPrice: 42, bgColor: 'from-brown-100 to-brown-200' },
+            { id: 'strawberry', name: 'Fresh Strawberries', category: 'fruits', emoji: '🍓', farmer: 'Neha Verma', distance: 26, available: 8, basePrice: 180, yourPrice: 188, bgColor: 'from-red-100 to-red-200' },
+            { id: 'kiwi', name: 'Fresh Kiwi', category: 'fruits', emoji: '🥝', farmer: 'Arjun Thakur', distance: 44, available: 12, basePrice: 150, yourPrice: 158, bgColor: 'from-green-100 to-green-200' },
+            { id: 'peach', name: 'Fresh Peaches', category: 'fruits', emoji: '🍑', farmer: 'Sita Sharma', distance: 29, available: 18, basePrice: 95, yourPrice: 102, bgColor: 'from-orange-100 to-orange-200' },
+            { id: 'plum', name: 'Sweet Plums', category: 'fruits', emoji: '🟣', farmer: 'Mohan Kumar', distance: 33, available: 14, basePrice: 85, yourPrice: 92, bgColor: 'from-purple-100 to-purple-200' },
+            
+            // Grains
+            { id: 'rice', name: 'Basmati Rice', category: 'grains', emoji: '🌾', farmer: 'Harinder Singh', distance: 45, available: 100, basePrice: 65, yourPrice: 72, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'wheat', name: 'Whole Wheat', category: 'grains', emoji: '🌾', farmer: 'Kuldeep Sharma', distance: 40, available: 120, basePrice: 28, yourPrice: 33, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'corn', name: 'Sweet Corn', category: 'grains', emoji: '🌽', farmer: 'Anil Gupta', distance: 20, available: 35, basePrice: 35, yourPrice: 40, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'millets', name: 'Pearl Millet', category: 'grains', emoji: '🌾', farmer: 'Babulal Meena', distance: 38, available: 50, basePrice: 45, yourPrice: 52, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'barley', name: 'Fresh Barley', category: 'grains', emoji: '🌾', farmer: 'Jagdish Yadav', distance: 42, available: 40, basePrice: 38, yourPrice: 44, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'oats', name: 'Organic Oats', category: 'grains', emoji: '🌾', farmer: 'Pradeep Kumar', distance: 35, available: 30, basePrice: 55, yourPrice: 62, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'quinoa', name: 'Organic Quinoa', category: 'grains', emoji: '🌾', farmer: 'Vikram Singh', distance: 48, available: 20, basePrice: 180, yourPrice: 190, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'buckwheat', name: 'Buckwheat', category: 'grains', emoji: '🌾', farmer: 'Sundar Lal', distance: 36, available: 25, basePrice: 85, yourPrice: 92, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'ragi', name: 'Finger Millet (Ragi)', category: 'grains', emoji: '🌾', farmer: 'Lakshman Rao', distance: 41, available: 35, basePrice: 65, yourPrice: 72, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'jowar', name: 'Sorghum (Jowar)', category: 'grains', emoji: '🌾', farmer: 'Govind Patil', distance: 39, available: 40, basePrice: 48, yourPrice: 55, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'amaranth', name: 'Amaranth Seeds', category: 'grains', emoji: '🌾', farmer: 'Rajesh Gupta', distance: 43, available: 22, basePrice: 120, yourPrice: 128, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'flax', name: 'Flax Seeds', category: 'grains', emoji: '🌾', farmer: 'Suresh Yadav', distance: 37, available: 18, basePrice: 150, yourPrice: 158, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'chia', name: 'Chia Seeds', category: 'grains', emoji: '🌾', farmer: 'Ankit Sharma', distance: 46, available: 15, basePrice: 200, yourPrice: 210, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'sesame', name: 'Sesame Seeds', category: 'grains', emoji: '🌾', farmer: 'Ramesh Patel', distance: 34, available: 28, basePrice: 90, yourPrice: 98, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'sunflower', name: 'Sunflower Seeds', category: 'grains', emoji: '🌾', farmer: 'Kiran Singh', distance: 41, available: 32, basePrice: 75, yourPrice: 82, bgColor: 'from-yellow-100 to-yellow-200' },
+            { id: 'pumpkin', name: 'Pumpkin Seeds', category: 'grains', emoji: '🌾', farmer: 'Deepak Kumar', distance: 39, available: 20, basePrice: 160, yourPrice: 168, bgColor: 'from-yellow-100 to-yellow-200' },
+            
+            // Herbs
+            { id: 'coriander', name: 'Fresh Coriander', category: 'herbs', emoji: '🌿', farmer: 'Meera Devi', distance: 8, available: 10, basePrice: 40, yourPrice: 43, bgColor: 'from-green-100 to-green-200' },
+            { id: 'mint', name: 'Fresh Mint', category: 'herbs', emoji: '🌿', farmer: 'Lakshmi Bai', distance: 12, available: 8, basePrice: 35, yourPrice: 38, bgColor: 'from-green-100 to-green-200' },
+            { id: 'basil', name: 'Holy Basil', category: 'herbs', emoji: '🌿', farmer: 'Radha Sharma', distance: 15, available: 6, basePrice: 50, yourPrice: 54, bgColor: 'from-green-100 to-green-200' },
+            { id: 'fenugreek', name: 'Fenugreek Leaves', category: 'herbs', emoji: '🌿', farmer: 'Kamala Devi', distance: 10, available: 12, basePrice: 30, yourPrice: 33, bgColor: 'from-green-100 to-green-200' },
+            { id: 'curry', name: 'Curry Leaves', category: 'herbs', emoji: '🌿', farmer: 'Savita Patil', distance: 18, available: 5, basePrice: 60, yourPrice: 65, bgColor: 'from-green-100 to-green-200' },
+            { id: 'dill', name: 'Fresh Dill', category: 'herbs', emoji: '🌿', farmer: 'Usha Rani', distance: 14, available: 7, basePrice: 45, yourPrice: 49, bgColor: 'from-green-100 to-green-200' },
+            { id: 'rosemary', name: 'Fresh Rosemary', category: 'herbs', emoji: '🌿', farmer: 'Maria D\'Souza', distance: 22, available: 4, basePrice: 120, yourPrice: 126, bgColor: 'from-green-100 to-green-200' },
+            { id: 'thyme', name: 'Fresh Thyme', category: 'herbs', emoji: '🌿', farmer: 'Peter John', distance: 28, available: 3, basePrice: 140, yourPrice: 147, bgColor: 'from-green-100 to-green-200' },
+            { id: 'oregano', name: 'Fresh Oregano', category: 'herbs', emoji: '🌿', farmer: 'Sarah Khan', distance: 25, available: 5, basePrice: 100, yourPrice: 106, bgColor: 'from-green-100 to-green-200' },
+            { id: 'parsley', name: 'Fresh Parsley', category: 'herbs', emoji: '🌿', farmer: 'David Wilson', distance: 31, available: 6, basePrice: 80, yourPrice: 86, bgColor: 'from-green-100 to-green-200' },
+            { id: 'sage', name: 'Fresh Sage', category: 'herbs', emoji: '🌿', farmer: 'Lisa Brown', distance: 26, available: 4, basePrice: 110, yourPrice: 116, bgColor: 'from-green-100 to-green-200' },
+            { id: 'cilantro', name: 'Fresh Cilantro', category: 'herbs', emoji: '🌿', farmer: 'Ahmed Ali', distance: 19, available: 9, basePrice: 42, yourPrice: 46, bgColor: 'from-green-100 to-green-200' },
+            { id: 'chives', name: 'Fresh Chives', category: 'herbs', emoji: '🌿', farmer: 'Emma Davis', distance: 23, available: 5, basePrice: 95, yourPrice: 101, bgColor: 'from-green-100 to-green-200' },
+            { id: 'tarragon', name: 'Fresh Tarragon', category: 'herbs', emoji: '🌿', farmer: 'Jean Pierre', distance: 30, available: 3, basePrice: 130, yourPrice: 137, bgColor: 'from-green-100 to-green-200' },
+            { id: 'lavender', name: 'Fresh Lavender', category: 'herbs', emoji: '🌿', farmer: 'Sophie Martin', distance: 35, available: 4, basePrice: 150, yourPrice: 158, bgColor: 'from-green-100 to-green-200' },
+            { id: 'lemongrass', name: 'Fresh Lemongrass', category: 'herbs', emoji: '🌿', farmer: 'Raj Patel', distance: 17, available: 8, basePrice: 55, yourPrice: 59, bgColor: 'from-green-100 to-green-200' }
+        ];
+
+        // Initialize products
+        function initializeProducts() {
+            allProducts = [...productDatabase];
+            filteredProducts = [...allProducts];
+            renderProducts();
+            updateStats();
+        }
+
+        // Render products to the grid
+        function renderProducts() {
+            const productsGrid = document.getElementById('productsGrid');
+            let html = '';
+
+            filteredProducts.forEach(product => {
+                const transportCost = product.yourPrice - product.basePrice;
+                html += `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow" data-category="${product.category}" data-distance="${product.distance}" data-price="${product.yourPrice}">
+                        <div class="h-48 bg-gradient-to-br ${product.bgColor} flex items-center justify-center">
+                            <span class="text-6xl">${product.emoji}</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-lg font-semibold text-gray-900">${product.name}</h3>
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Fresh</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">By Farmer: ${product.farmer}</p>
+                            <p class="text-sm text-gray-600 mb-3">📍 ${product.distance}km away • Available: ${product.available}kg</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Base Price: ₹${product.basePrice}/kg</p>
+                                    <p class="text-lg font-bold text-gray-900">Your Price: ₹${product.yourPrice}/kg</p>
+                                    <p class="text-xs text-green-600">+₹${transportCost} transport included</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2 mb-4">
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full" onclick="updateQuantity('${product.id}', -1)">-</button>
+                                <input type="number" id="${product.id}-qty" value="0" min="0" max="${product.available}" class="w-16 text-center border border-gray-300 rounded-lg py-1">
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full" onclick="updateQuantity('${product.id}', 1)">+</button>
+                                <span class="text-sm text-gray-600">kg</span>
+                            </div>
+                            <button class="w-full bg-primary hover:bg-secondary text-white py-2 rounded-lg transition-colors" onclick="addToCart('${product.id}', '${product.name}', ${product.yourPrice})">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            productsGrid.innerHTML = html;
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const locationFilter = document.getElementById('locationFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            // Filter by category
+            filteredProducts = allProducts.filter(product => {
+                if (categoryFilter === 'all') return true;
+                return product.category === categoryFilter;
+            });
+
+            // Filter by location
+            if (locationFilter !== 'all') {
+                const maxDistance = parseInt(locationFilter);
+                filteredProducts = filteredProducts.filter(product => product.distance <= maxDistance);
+            }
+
+            // Sort products
+            switch (sortFilter) {
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.yourPrice - b.yourPrice);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.yourPrice - a.yourPrice);
+                    break;
+                case 'distance':
+                    filteredProducts.sort((a, b) => a.distance - b.distance);
+                    break;
+                default:
+                    // Keep original order
+                    break;
+            }
+
+            renderProducts();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('availableProducts').textContent = filteredProducts.length;
+        }
+
+        // Function to update quantity using + and - buttons
+        function updateQuantity(productId, change) {
+            const input = document.getElementById(productId + '-qty');
+            if (!input) return;
+            
+            let currentValue = parseInt(input.value) || 0;
+            let newValue = currentValue + change;
+            
+            // Ensure quantity doesn't go below 0 or above max
+            if (newValue < 0) newValue = 0;
+            if (newValue > parseInt(input.max)) newValue = parseInt(input.max);
+            
+            input.value = newValue;
+        }
+
+        // Function to add items to cart
+        function addToCart(productId, productName, price) {
+            const quantityInput = document.getElementById(productId + '-qty');
+            if (!quantityInput) return;
+            
+            const quantity = parseInt(quantityInput.value) || 0;
+            
+            // Validate quantity
+            if (quantity <= 0) {
+                showNotification('Please select a quantity greater than 0', 'error');
+                return;
+            }
+
+            // Add to cart or update existing item
+            if (cart[productId]) {
+                cart[productId].quantity += quantity;
+            } else {
+                cart[productId] = {
+                    name: productName,
+                    price: price,
+                    quantity: quantity
+                };
+            }
+
+            // Reset quantity input to 0
+            quantityInput.value = 0;
+            
+            // Update cart display
+            updateCartDisplay();
+            
+            // Show success notification
+            showNotification(`${quantity}kg of ${productName} added to cart!`);
+        }
+
+        // Function to remove items from cart
+        function removeFromCart(productId) {
+            if (confirm('Remove this item from cart?')) {
+                delete cart[productId];
+                updateCartDisplay();
+                showNotification('Item removed from cart successfully!');
+            }
+        }
+
+        // Function to toggle cart modal
+        function toggleCartModal() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Function to update cart display and statistics
+        function updateCartDisplay() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartCountSpan = document.getElementById('cartCount');
+            const totalAmountSpan = document.getElementById('totalAmount');
+            const cartTotalSpan = document.getElementById('cartTotal');
+            const cartBadge = document.getElementById('cartBadge');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            let itemCount = 0;
+            cartTotal = 0;
+            let cartHTML = '';
+
+            // Check if cart is empty
+            if (Object.keys(cart).length === 0) {
+                cartHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty. Add some products to get started!</p>';
+                checkoutBtn.disabled = true;
+                cartBadge.classList.add('hidden');
+            } else {
+                checkoutBtn.disabled = false;
+                cartBadge.classList.remove('hidden');
+                
+                // Generate cart items HTML
+                for (let productId in cart) {
+                    const item = cart[productId];
+                    const itemTotal = item.price * item.quantity;
+                    itemCount += item.quantity;
+                    cartTotal += itemTotal;
+
+                    cartHTML += `
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-900">${item.name}</h4>
+                                    <p class="text-sm text-gray-600">${item.quantity}kg × ₹${item.price}/kg</p>
+                                </div>
+                                <span class="font-semibold text-gray-900 text-lg">₹${itemTotal}</span>
+                            </div>
+                            <div class="flex justify-end">
+                                <button onclick="removeFromCart('${productId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-medium transition-colors">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Update all cart-related elements
+            cartItemsDiv.innerHTML = cartHTML;
+            cartCountSpan.textContent = itemCount;
+            totalAmountSpan.textContent = cartTotal;
+            cartTotalSpan.textContent = cartTotal;
+            cartBadge.textContent = itemCount;
+        }
+
+        // Function to handle checkout process
+        function checkout() {
+            if (Object.keys(cart).length === 0) {
+                showNotification('Your cart is empty!', 'error');
+                return;
+            }
+
+            // Generate order summary
+            let orderSummary = 'Order Summary:\n\n';
+            for (let productId in cart) {
+                const item = cart[productId];
+                orderSummary += `${item.name}: ${item.quantity}kg × ₹${item.price}/kg = ₹${item.price * item.quantity}\n`;
+            }
+            orderSummary += `\nTotal Amount: ₹${cartTotal}`;
+            orderSummary += '\n\nNote: Farmers will be paid upfront. Your order will be processed for delivery.';
+
+            // Confirm order
+            if (confirm(orderSummary + '\n\nProceed with this order?')) {
+                showNotification('Order placed successfully! 🎉 Farmers have been paid upfront.');
+                
+                // Clear cart after successful order
+                cart = {};
+                updateCartDisplay();
+                
+                // Close cart modal
+                document.getElementById('cartModal').classList.add('hidden');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showNotification('Logged out successfully! Redirecting...');
+                // In a real app, this would redirect to login page
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            // Set message and icon based on type
+            messageEl.textContent = message;
+            if (type === 'success') {
+                icon.textContent = '✅';
+                icon.className = 'text-green-500 text-xl';
+            } else if (type === 'error') {
+                icon.textContent = '❌';
+                icon.className = 'text-red-500 text-xl';
+            }
+            
+            // Show notification
+            notification.classList.remove('translate-x-full');
+            notification.classList.add('translate-x-0');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProducts();
+            updateCartDisplay();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9656816b151c9377',t:'MTc1MzU2MDI2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

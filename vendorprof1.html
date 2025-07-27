@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'green-primary': '#10b981',
+                        'green-light': '#d1fae5',
+                        'green-dark': '#047857'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Top Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-2xl font-bold text-gray-900">Vendor Dashboard</h1>
+                <button class="bg-green-primary hover:bg-green-dark text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Live Location Section -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Live Location & Status</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="flex gap-3">
+                        <button id="clockInBtn" class="bg-green-primary hover:bg-green-dark text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Clock In
+                        </button>
+                        <button id="clockOutBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Clock Out
+                        </button>
+                    </div>
+                    <div id="statusDisplay" class="text-sm text-gray-600">
+                        Status: <span class="font-medium text-red-600">Clocked Out</span>
+                    </div>
+                </div>
+                <div class="bg-green-light rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-medium text-gray-900">Current Location</h3>
+                        <button id="updateLocationBtn" class="bg-green-primary hover:bg-green-dark text-white px-3 py-1 rounded text-xs transition-colors duration-200">
+                            Update Location
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden border border-green-primary/20">
+                        <div id="map" class="h-48 w-full"></div>
+                        <div class="p-2 bg-gray-50 border-t">
+                            <p id="coordinates" class="text-xs text-gray-600">Loading location...</p>
+                            <p id="address" class="text-xs text-green-primary font-medium">Fetching address...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendor Profile Section -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Vendor Profile</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Name</label>
+                        <p class="text-gray-900 font-medium">Rajesh Kumar</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Phone</label>
+                        <p class="text-gray-900">+91 98765 43210</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Business Type</label>
+                        <p class="text-gray-900">Street Food Vendor</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Address</label>
+                        <p class="text-gray-900">Connaught Place, New Delhi</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Availability</label>
+                        <div class="flex items-center gap-3 mt-2">
+                            <button id="availabilityToggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-green-primary transition-colors focus:outline-none focus:ring-2 focus:ring-green-primary focus:ring-offset-2">
+                                <span id="toggleSlider" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
+                            </button>
+                            <span id="availabilityText" class="text-sm font-medium text-green-primary">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selling Statistics Section -->
+        <div class="grid lg:grid-cols-4 gap-6 mb-8">
+            <!-- Stats Cards -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Revenue</p>
+                        <p class="text-2xl font-bold text-gray-900">₹12,450</p>
+                        <p class="text-xs text-green-primary">+12% from yesterday</p>
+                    </div>
+                    <div class="bg-green-light p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-green-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Units Sold</p>
+                        <p class="text-2xl font-bold text-gray-900">156</p>
+                        <p class="text-xs text-green-primary">+8% from yesterday</p>
+                    </div>
+                    <div class="bg-green-light p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-green-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Best Selling</p>
+                        <p class="text-lg font-bold text-gray-900">Samosa</p>
+                        <p class="text-xs text-green-primary">45 units sold</p>
+                    </div>
+                    <div class="bg-green-light p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-green-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Today's Sales</p>
+                        <p class="text-2xl font-bold text-gray-900">₹2,340</p>
+                        <p class="text-xs text-green-primary">32 orders</p>
+                    </div>
+                    <div class="bg-green-light p-3 rounded-lg">
+                        <svg class="w-6 h-6 text-green-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Sales Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Daily Sales Chart</h2>
+            <div class="h-64">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time map functionality
+        let map;
+        let marker;
+        let currentLat = 28.6139;
+        let currentLng = 77.2090;
+
+        function initializeMap() {
+            // Initialize the map
+            map = L.map('map').setView([currentLat, currentLng], 15);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Create custom green marker
+            const greenIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: '<div style="background-color: #10b981; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+
+            // Add marker
+            marker = L.marker([currentLat, currentLng], {icon: greenIcon}).addTo(map);
+            marker.bindPopup('<b>Your Current Location</b><br>Vendor Position').openPopup();
+
+            // Update coordinates display
+            updateLocationDisplay();
+        }
+
+        function updateLocationDisplay() {
+            document.getElementById('coordinates').textContent = `Lat: ${currentLat.toFixed(4)}, Lng: ${currentLng.toFixed(4)}`;
+            
+            // Simulate reverse geocoding (in real app, you'd use a geocoding service)
+            const addresses = [
+                'Connaught Place, New Delhi',
+                'Khan Market, New Delhi',
+                'Karol Bagh, New Delhi',
+                'Lajpat Nagar, New Delhi',
+                'Sarojini Nagar, New Delhi'
+            ];
+            const randomAddress = addresses[Math.floor(Math.random() * addresses.length)];
+            document.getElementById('address').textContent = randomAddress;
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        currentLat = position.coords.latitude;
+                        currentLng = position.coords.longitude;
+                        
+                        // Update map view and marker
+                        map.setView([currentLat, currentLng], 15);
+                        marker.setLatLng([currentLat, currentLng]);
+                        
+                        updateLocationDisplay();
+                        
+                        // Show success message
+                        showLocationUpdate('Location updated successfully!', 'success');
+                    },
+                    function(error) {
+                        // Simulate location update with random nearby coordinates
+                        currentLat += (Math.random() - 0.5) * 0.01;
+                        currentLng += (Math.random() - 0.5) * 0.01;
+                        
+                        map.setView([currentLat, currentLng], 15);
+                        marker.setLatLng([currentLat, currentLng]);
+                        
+                        updateLocationDisplay();
+                        showLocationUpdate('Location simulated (GPS not available)', 'info');
+                    }
+                );
+            } else {
+                showLocationUpdate('Geolocation not supported', 'error');
+            }
+        }
+
+        function showLocationUpdate(message, type) {
+            const colors = {
+                success: 'bg-green-100 text-green-800 border-green-200',
+                info: 'bg-blue-100 text-blue-800 border-blue-200',
+                error: 'bg-red-100 text-red-800 border-red-200'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 px-4 py-2 rounded-lg border text-sm font-medium z-50 ${colors[type]}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            
+            // Auto-update location every 30 seconds (for demo)
+            setInterval(() => {
+                if (isClockedIn) {
+                    getCurrentLocation();
+                }
+            }, 30000);
+        });
+
+        // Update location button
+        document.getElementById('updateLocationBtn').addEventListener('click', getCurrentLocation);
+
+        // Clock In/Out functionality
+        let isClockedIn = false;
+        const clockInBtn = document.getElementById('clockInBtn');
+        const clockOutBtn = document.getElementById('clockOutBtn');
+        const statusDisplay = document.getElementById('statusDisplay');
+
+        function updateClockStatus() {
+            if (isClockedIn) {
+                clockInBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                clockInBtn.classList.remove('bg-green-primary', 'hover:bg-green-dark');
+                clockOutBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                clockOutBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+                statusDisplay.innerHTML = 'Status: <span class="font-medium text-green-600">Clocked In</span>';
+            } else {
+                clockInBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                clockInBtn.classList.add('bg-green-primary', 'hover:bg-green-dark');
+                clockOutBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                clockOutBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+                statusDisplay.innerHTML = 'Status: <span class="font-medium text-red-600">Clocked Out</span>';
+            }
+        }
+
+        clockInBtn.addEventListener('click', () => {
+            if (!isClockedIn) {
+                isClockedIn = true;
+                updateClockStatus();
+            }
+        });
+
+        clockOutBtn.addEventListener('click', () => {
+            if (isClockedIn) {
+                isClockedIn = false;
+                updateClockStatus();
+            }
+        });
+
+        // Availability toggle
+        let isOnline = true;
+        const availabilityToggle = document.getElementById('availabilityToggle');
+        const toggleSlider = document.getElementById('toggleSlider');
+        const availabilityText = document.getElementById('availabilityText');
+
+        function updateAvailability() {
+            if (isOnline) {
+                availabilityToggle.classList.add('bg-green-primary');
+                availabilityToggle.classList.remove('bg-gray-300');
+                toggleSlider.classList.add('translate-x-6');
+                toggleSlider.classList.remove('translate-x-1');
+                availabilityText.textContent = 'Online';
+                availabilityText.classList.add('text-green-primary');
+                availabilityText.classList.remove('text-gray-500');
+            } else {
+                availabilityToggle.classList.remove('bg-green-primary');
+                availabilityToggle.classList.add('bg-gray-300');
+                toggleSlider.classList.remove('translate-x-6');
+                toggleSlider.classList.add('translate-x-1');
+                availabilityText.textContent = 'Offline';
+                availabilityText.classList.remove('text-green-primary');
+                availabilityText.classList.add('text-gray-500');
+            }
+        }
+
+        availabilityToggle.addEventListener('click', () => {
+            isOnline = !isOnline;
+            updateAvailability();
+        });
+
+        // Initialize chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Daily Sales (₹)',
+                    data: [1200, 1900, 1500, 2200, 1800, 2400, 2340],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize status
+        updateClockStatus();
+        updateAvailability();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'965c63dbd7c17eca',t:'MTc1MzYyMTk2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+

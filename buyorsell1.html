@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Vendors - Street Vendor Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+        .button-hover-effect {
+            transition: all 0.3s ease;
+        }
+        .market-illustration {
+            background: linear-gradient(45deg, #d1fae5, #a7f3d0);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+
+    <!-- Hero Section -->
+    <main class="hero-gradient min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Content -->
+                <div class="text-center lg:text-left">
+                    <h1 class="text-5xl lg:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+                        Welcome, <span class="text-green-700">Vendors!</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                        Buy or sell products with ease and trust. Join our community of local vendors and discover amazing deals in your neighborhood.
+                    </p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <button onclick="window.location.href=`./1.2.html`" class="bg-green-200 hover:bg-green-300 text-green-800 font-semibold px-8 py-4 rounded-xl button-hover-effect shadow-sm hover:shadow-md flex items-center justify-center space-x-2 text-lg">
+                            <span>🛒</span>
+                            <span>Start Buying</span>
+                        </button>
+                        <button onclick="window.location.href=`./vendorprof1.html`" class="border-2 border-green-400 text-green-700 hover:bg-green-100 font-semibold px-8 py-4 rounded-xl button-hover-effect flex items-center justify-center space-x-2 text-lg">
+                            <span>🧺</span>
+                            <span>Start Selling</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Trust indicators -->
+                    <div class="mt-12 flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-gray-500">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                            <span>Trusted by 10,000+ vendors</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                            <span>Secure payments</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                            <span>Local community</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Illustration -->
+                <div class="market-illustration">
+                    <div class="text-center">
+                        <!-- Market scene with emojis and shapes -->
+                        <div class="relative">
+                            <!-- Market stalls -->
+                            <div class="flex justify-center space-x-4 mb-6">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="text-3xl mb-2">🍎</div>
+                                    <div class="text-xs text-gray-600">Fresh Fruits</div>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="text-3xl mb-2">🥖</div>
+                                    <div class="text-xs text-gray-600">Bakery</div>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="text-3xl mb-2">🌸</div>
+                                    <div class="text-xs text-gray-600">Flowers</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Happy vendors -->
+                            <div class="flex justify-center space-x-6 mb-4">
+                                <div class="text-4xl">👩‍🌾</div>
+                                <div class="text-4xl">👨‍🍳</div>
+                                <div class="text-4xl">👩‍💼</div>
+                            </div>
+                            
+                            <!-- Market atmosphere -->
+                            <div class="text-center">
+                                <div class="text-lg font-medium text-green-800 mb-2">Local Market Community</div>
+                                <div class="text-sm text-green-600">Connecting neighbors through commerce</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-green-50 border-t border-green-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Company info -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-200 rounded-lg p-2 mr-3">
+                            <svg class="w-6 h-6 text-green-700" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-lg font-semibold text-gray-800">GoGrocy</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">Empowering local vendors and connecting communities through trusted commerce.</p>
+                </div>
+                
+                <!-- Quick links -->
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">How It Works</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">Support</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-4">Legal</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-green-700 transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth hover effects and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Button click handlers
+            const buyButton = document.querySelector('button:has([text="Start Buying"])');
+            const sellButton = document.querySelector('button:has([text="Start Selling"])');
+            
+            if (buyButton) {
+                buyButton.addEventListener('click', function() {
+                    alert('Welcome to the buying section! Here you would browse available products from local vendors.');
+                });
+            }
+            
+            if (sellButton) {
+                sellButton.addEventListener('click', function() {
+                    alert('Ready to start selling? Here you would set up your vendor profile and list your products.');
+                });
+            }
+            
+            // Add subtle animations on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for animation
+            document.querySelectorAll('.market-illustration > div').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'965c361904e67f22',t:'MTc1MzYyMDA5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Portal - List Your Produce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .input-focus:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">🌾</div>
+                    <h1 class="text-2xl font-bold">Farmer Portal</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-green-100">Welcome, Farmer!</span>
+                    <button onclick="window.location.href=`./1.2.html`" class="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                        View Products
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Main Form Card -->
+            <div class="bg-white rounded-xl card-shadow p-8 mb-6">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">List Your Fresh Product</h2>
+                    <p class="text-gray-600">Connect directly with street vendors and get fair prices for your crops</p>
+                </div>
+
+                <form id="produceForm" class="space-y-6">
+                    <!-- Product Category -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Product Category</label>
+                        <select id="category" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" required>
+                            <option value="">Select category...</option>
+                            <option value="vegetables">🥬 Vegetables</option>
+                            <option value="fruits">🍎 Fruits</option>
+                            <option value="grains">🌾 Grains & Cereals</option>
+                            <option value="herbs">🌿 Herbs & Spices</option>
+                            <option value="dairy">🥛 Dairy Products</option>
+                        </select>
+                    </div>
+
+                    <!-- Product Name -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Product Name</label>
+                        <select id="productName" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" required disabled>
+                            <option value="">First select a category...</option>
+                        </select>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Quantity Available</label>
+                            <input type="number" id="quantity" min="1" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" placeholder="100" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Unit</label>
+                            <select id="unit" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" required>
+                                <option value="">Select unit...</option>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="quintal">Quintals</option>
+                                <option value="tons">Tons</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="liters">Liters</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Price per Unit (₹)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-4 text-gray-500 font-medium">₹</span>
+                            <input type="number" id="price" min="0" step="0.01" class="w-full p-4 pl-8 border-2 border-gray-200 rounded-lg input-focus transition-all" placeholder="25.00" required>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">This is your base price. Vendors will pay this + small transport fee.</p>
+                    </div>
+
+                    <!-- Quality Grade -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Quality Grade</label>
+                        <select id="quality" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" required>
+                            <option value="">Select quality...</option>
+                            <option value="premium">🌟 Premium Grade</option>
+                            <option value="standard">✅ Standard Grade</option>
+                            <option value="organic">🌱 Organic Certified</option>
+                        </select>
+                    </div>
+
+                    <!-- Harvest Date -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Harvest Date</label>
+                        <input type="date" id="harvestDate" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" required>
+                    </div>
+
+                    <!-- Location -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Farm Location</label>
+                        <input type="text" id="location" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" placeholder="Village, District, State" required>
+                    </div>
+
+                    
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Additional Details (Optional)</label>
+                        <textarea id="description" rows="3" class="w-full p-4 border-2 border-gray-200 rounded-lg input-focus transition-all" placeholder="Any special notes about your produce..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full gradient-bg text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity">
+                        🚀 List My Produce
+                    </button>
+                </form>
+            </div>
+
+            <!-- Current Listings Preview -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Your Current Listings</h3>
+                <div id="listingsContainer" class="space-y-4">
+                    <!-- Sample listing -->
+                    <div class="border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center text-2xl">🥕</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Fresh Carrots</h4>
+                                <p class="text-gray-600">50 kg • ₹30/kg • Premium Grade</p>
+                                <p class="text-sm text-green-600">Listed 2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-blue-500 hover:text-blue-700 px-3 py-1 rounded">Edit</button>
+                            <button class="text-red-500 hover:text-red-700 px-3 py-1 rounded">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const productCategories = {
+            vegetables: ['Tomatoes', 'Onions', 'Potatoes', 'Carrots', 'Cabbage', 'Cauliflower', 'Spinach', 'Brinjal', 'Okra', 'Beans'],
+            fruits: ['Apples', 'Bananas', 'Oranges', 'Mangoes', 'Grapes', 'Pomegranates', 'Guavas', 'Papayas', 'Watermelons', 'Lemons'],
+            grains: ['Rice', 'Wheat', 'Corn', 'Barley', 'Millet', 'Sorghum', 'Oats', 'Quinoa'],
+            herbs: ['Coriander', 'Mint', 'Basil', 'Turmeric', 'Ginger', 'Garlic', 'Chili', 'Cumin'],
+            dairy: ['Fresh Milk', 'Yogurt', 'Paneer', 'Butter', 'Ghee']
+        };
+
+        document.getElementById('category').addEventListener('change', function() {
+            const category = this.value;
+            const productSelect = document.getElementById('productName');
+            
+            productSelect.innerHTML = '<option value="">Select product...</option>';
+            
+            if (category && productCategories[category]) {
+                productSelect.disabled = false;
+                productCategories[category].forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.toLowerCase().replace(' ', '-');
+                    option.textContent = product;
+                    productSelect.appendChild(option);
+                });
+            } else {
+                productSelect.disabled = true;
+            }
+        });
+
+                
+        document.getElementById('produceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            
+            const formData = {
+                category: document.getElementById('category').value,
+                productName: document.getElementById('productName').value,
+                quantity: document.getElementById('quantity').value,
+                unit: document.getElementById('unit').value,
+                price: document.getElementById('price').value,
+                quality: document.getElementById('quality').value,
+                harvestDate: document.getElementById('harvestDate').value,
+                location: document.getElementById('location').value,
+                description: document.getElementById('description').value
+            };
+
+            
+            const button = e.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Listed Successfully!';
+            button.disabled = true;
+            
+            
+            addToListings(formData);
+            
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                e.target.reset();
+                removeImage();
+                document.getElementById('productName').disabled = true;
+                document.getElementById('productName').innerHTML = '<option value="">First select a category...</option>';
+            }, 2000);
+        });
+
+    
+        function addToListings(data) {
+            const container = document.getElementById('listingsContainer');
+            const listingDiv = document.createElement('div');
+            listingDiv.className = 'border border-gray-200 rounded-lg p-4 flex items-center justify-between';
+            
+            const emoji = data.category === 'vegetables' ? '🥬' : 
+                         data.category === 'fruits' ? '🍎' : 
+                         data.category === 'grains' ? '🌾' : 
+                         data.category === 'herbs' ? '🌿' : '🥛';
+            
+            listingDiv.innerHTML = `
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center text-2xl">${emoji}</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">${data.productName.charAt(0).toUpperCase() + data.productName.slice(1).replace('-', ' ')}</h4>
+                        <p class="text-gray-600">${data.quantity} ${data.unit} • ₹${data.price}/${data.unit} • ${data.quality.charAt(0).toUpperCase() + data.quality.slice(1)} Grade</p>
+                        <p class="text-sm text-green-600">Listed just now</p>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="text-blue-500 hover:text-blue-700 px-3 py-1 rounded">Edit</button>
+                    <button class="text-red-500 hover:text-red-700 px-3 py-1 rounded" onclick="this.parentElement.parentElement.remove()">Remove</button>
+                </div>
+            `;
+            
+            container.insertBefore(listingDiv, container.firstChild);
+        }
+
+        // Set minimum date to today
+        document.getElementById('harvestDate').min = new Date().toISOString().split('T')[0];
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'965a6ccbe03e84c2',t:'MTc1MzYwMTM1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
